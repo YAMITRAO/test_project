@@ -3,6 +3,7 @@ import "./App.css";
 import NavBar from "./components/NavBar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Auth/Login";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   const router = createBrowserRouter([
@@ -13,6 +14,10 @@ function App() {
     {
       path: "/",
       element: <NavBar />,
+    },
+    {
+      path: "/profile",
+      element: <Profile />,
     },
   ]);
   return (
