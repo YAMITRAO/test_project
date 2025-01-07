@@ -13,8 +13,7 @@ export interface LoginResponse {
   data: {
     userName: string;
     userEmail: string;
-    userId: string;
-    accessType: string;
+    isProUser: boolean;
   };
 }
 

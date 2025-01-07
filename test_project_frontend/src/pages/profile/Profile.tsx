@@ -7,7 +7,7 @@ const Profile = () => {
       {/* user profile card */}
       <ProfileCard />
       {/* general details */}
-      <GeneralInfoCard />
+      {/* <GeneralInfoCard /> */}
     </>
   );
 };

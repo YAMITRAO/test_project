@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Login_Credentails, LoginResponse } from "../../types/AuthTypes";
 import { toast } from "react-toastify";
 import { ApiResponse } from "../../types/ApiTypes";
@@ -6,10 +6,13 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 import axiosInt from "../../helper/ApiInstance";
+import UserContext from "../../context/user_context/UserContext";
 
 axiosInt;
 const Login = () => {
-  // context to store data at login time
+  // useContext
+  const { dispatch } = useContext(UserContext);
+  // useSatte to store data at login time
   const [enteredCredentials, setEnteredCredentials] =
     useState<Login_Credentails>({
       userEmail: "",
@@ -17,7 +20,7 @@ const Login = () => {
     });
 
   // navigation hook
-  // let navigate = useNavigate();
+  let navigate = useNavigate();
 
   // input change handler
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +30,6 @@ const Login = () => {
 
   // login function
   const apiLoginHandler = async () => {
-    console.log("enteredValues are", enteredCredentials);
     try {
       let response = await axiosInt.post<ApiResponse<LoginResponse>>(
         `/user/user-login`,
@@ -35,14 +37,14 @@ const Login = () => {
           ...enteredCredentials,
         }
       );
-      console.log("response is", response.data);
+
       localStorage.setItem("token", response.data.data.token || "");
       toast.success(response.data.message || "Waw!!!Successfully got response");
-      // dispatch({
-      //   type: "USER_LOGIN",
-      //   payload: { ...response.data.data.data, isAuth: true },
-      // });
-      // navigate("/");
+      dispatch({
+        type: "USER_LOGIN",
+        payload: { ...response.data.data.data, isAuth: true },
+      });
+      navigate("/");
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {

@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { FaWallet } from "react-icons/fa";
+import { FaUserAstronaut } from "react-icons/fa";
+import UserContext from "../context/user_context/UserContext";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+  const { state, dispatch } = useContext(UserContext);
+  const navigate = useNavigate();
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [isAppsVisible, setIsAppsVisible] = useState(false);
   const [isProfileVisible, setIsProfileVisible] = useState(false);
@@ -13,6 +19,14 @@ const NavBar = () => {
       setIsProfileVisible(false);
       setIsNotificationVisible(false);
     }
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    dispatch({
+      type: "LOGOUT_USER",
+    });
+    navigate("/login");
   };
   return (
     <div>
@@ -70,15 +84,13 @@ const NavBar = () => {
               </button>
 
               {/* logo with name */}
-              <a href="#" className="flex mr-4">
-                <img
-                  src="https://flowbite.s3.amazonaws.com/logo.svg"
-                  className="mr-3 h-8"
-                  alt="FlowBite Logo"
-                />
-                <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  Test Nav
+              <a href="#" className="flex mr-4  items-center gap-4">
+                <span className="text-[28px] text-[#1c9ab4]">
+                  <FaWallet />
                 </span>
+                {/* <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                  Expense App
+                </span> */}
               </a>
 
               {/* search bar */}
@@ -118,27 +130,6 @@ const NavBar = () => {
 
             {/* right side content */}
             <div className="flex items-center lg:order-2 ">
-              {/* new widget button */}
-              <button
-                type="button"
-                className="hidden sm:inline-flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
-              >
-                <svg
-                  aria-hidden="true"
-                  className="mr-1 -ml-1 w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>{" "}
-                New Widget
-              </button>
-
               {/* small search button for mobile view */}
               <button
                 id="toggleSidebarMobileSearch"
@@ -636,11 +627,9 @@ const NavBar = () => {
                 }}
               >
                 <span className="sr-only">Open user menu</span>
-                <img
-                  className="w-8 h-8 rounded-full"
-                  src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  alt="user photo"
-                />
+                <span className="text-[20px] rounded-full bg-slate-400 p-1 text-[#78290f]">
+                  <FaUserAstronaut />
+                </span>
               </button>
 
               {isProfileVisible && (
@@ -650,10 +639,10 @@ const NavBar = () => {
                 >
                   <div className="py-3 px-4">
                     <span className="block text-sm font-semibold text-gray-900 dark:text-white">
-                      Neil sims
+                      {state.userName}
                     </span>
                     <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                      name@flowbite.com
+                      {state.userEmail}
                     </span>
                   </div>
                   <ul
@@ -661,23 +650,23 @@ const NavBar = () => {
                     aria-labelledby="dropdown"
                   >
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        to="/profile"
                         className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                       >
                         My profile
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        to="#"
                         className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                       >
                         Account settings
-                      </a>
+                      </Link>
                     </li>
                   </ul>
-                  <ul
+                  {/* <ul
                     className="py-1 text-gray-500 dark:text-gray-400"
                     aria-labelledby="dropdown"
                   >
@@ -752,18 +741,18 @@ const NavBar = () => {
                         </svg>
                       </a>
                     </li>
-                  </ul>
+                  </ul> */}
                   <ul
                     className="py-1 text-gray-500 dark:text-gray-400"
                     aria-labelledby="dropdown"
                   >
                     <li>
-                      <a
-                        href="#"
-                        className="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      <button
+                        className="w-full text-red-500 block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={logoutHandler}
                       >
                         Sign out
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 </div>
