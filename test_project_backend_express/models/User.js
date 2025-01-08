@@ -1,3 +1,4 @@
+const Expense = require("./expense");
 const { sequelize, DataTypes } = require("./Index");
 const bcrypt = require("bcryptjs");
 
@@ -31,5 +32,7 @@ User.beforeCreate(async (user) => {
 // User.prototype.comparePassword = async function (password) {
 //   return bcrypt.compare(password, this.password);
 // };
+
+User.hasMany(Expense, { foreignKey: "userEmail" });
 
 module.exports = User;

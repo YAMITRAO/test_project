@@ -1,6 +1,5 @@
 import { ToastContainer } from "react-toastify";
 import "./App.css";
-import NavBar from "./components/NavBar";
 import {
   createBrowserRouter,
   Navigate,
@@ -8,7 +7,6 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Auth/Login";
 import Profile from "./pages/profile/Profile";
-
 import DigitalClock from "./components/DigitalClock";
 import SingUp from "./pages/Auth/SingUp";
 import axiosInt from "./helper/ApiInstance";
@@ -17,16 +15,22 @@ import { ApiResponse } from "./types/ApiTypes";
 import { Get_user_data_int } from "./types/App";
 import Layout from "./components/Layout";
 import UserContext from "./context/user_context/UserContext";
+import Expense from "./pages/expense/Expense";
 
 function App() {
   const { state, dispatch } = useContext(UserContext);
   console.log("USer context is", state);
   const [loading, setLoading] = useState(true);
+
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Layout />,
       children: [
+        {
+          path: "/",
+          element: state.isAuth ? <Expense /> : <Login />,
+        },
         {
           path: "/login",
           element: state.isAuth ? <Navigate to="/" /> : <Login />,

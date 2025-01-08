@@ -12,6 +12,8 @@ app.use(express.urlencoded());
 
 // user routes
 app.use("/user", require("./routes/user"));
+// expense routes
+app.use("/expense", require("./routes/expense"));
 
 // test routes to test backend
 app.use("/test", (req, res) => {
