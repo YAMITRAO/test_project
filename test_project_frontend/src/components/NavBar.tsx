@@ -3,6 +3,8 @@ import { FaWallet } from "react-icons/fa";
 import { FaUserAstronaut } from "react-icons/fa";
 import UserContext from "../context/user_context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import axiosInt from "../helper/ApiInstance";
+import { toast } from "react-toastify";
 
 const NavBar = () => {
   const { state, dispatch } = useContext(UserContext);
@@ -32,6 +34,22 @@ const NavBar = () => {
   // buy preium handler
   const buyPremiumHandler = async () => {
     console.log("but preium clicked...");
+    alert("Do you want to be a premium user ?");
+    try {
+      await axiosInt.put(
+        "/user/buypremium",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      toast.success("You are now a premium user");
+      navigate("/");
+    } catch (error) {
+      console.log("Error is :- ", error);
+    }
   };
   return (
     <div>
@@ -657,13 +675,22 @@ const NavBar = () => {
                   </div>
                 )
               : state.isAuth && (
-                  <button
-                    className=" p-1 px-2 rounded-md text-slate-100 font-medium bg-green-600 "
-                    onClick={buyPremiumHandler}
-                  >
-                    {" "}
-                    Buy Premium
-                  </button>
+                  <div>
+                    <button
+                      className=" p-1 px-2 rounded-md text-slate-100 font-medium bg-green-600 mr-4"
+                      onClick={buyPremiumHandler}
+                    >
+                      {" "}
+                      Buy Premium
+                    </button>
+                    <button
+                      className=" p-1 px-2 rounded-md text-slate-100 font-medium bg-red-700 hover:bg-red-800 transition-all"
+                      onClick={logoutHandler}
+                    >
+                      {" "}
+                      Logout
+                    </button>
+                  </div>
                 )}
           </div>
         </nav>

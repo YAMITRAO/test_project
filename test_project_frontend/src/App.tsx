@@ -16,6 +16,8 @@ import { Get_user_data_int } from "./types/App";
 import Layout from "./components/Layout";
 import UserContext from "./context/user_context/UserContext";
 import Expense from "./pages/expense/Expense";
+import Spiner from "./components/later_useful/spiner";
+import PasswordReset from "./pages/Auth/ResetPassword";
 
 function App() {
   const { state, dispatch } = useContext(UserContext);
@@ -40,6 +42,10 @@ function App() {
           element: state.isAuth ? <Navigate to="/" /> : <SingUp />,
         },
         {
+          path: "/reset-password",
+          element: <PasswordReset />,
+        },
+        {
           path: "/profile",
           element: state.isAuth ? <Profile /> : <Login />,
         },
@@ -47,8 +53,8 @@ function App() {
     },
 
     {
-      path: "/digitalwatch",
-      element: <DigitalClock />,
+      path: "/test",
+      element: <Spiner />,
     },
   ]);
 
@@ -58,6 +64,7 @@ function App() {
       const response = await axiosInt.get<ApiResponse<Get_user_data_int>>(
         "/user/me",
         {
+          withCredentials: true,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

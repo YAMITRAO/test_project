@@ -35,7 +35,8 @@ const Login = () => {
         `/user/user-login`,
         {
           ...enteredCredentials,
-        }
+        },
+        { withCredentials: true }
       );
 
       localStorage.setItem("token", response.data.data.token || "");

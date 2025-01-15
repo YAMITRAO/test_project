@@ -1,13 +1,16 @@
+import { useContext } from "react";
 import profileAvtar from "../../assets/images/avtar/avtar123.jpg";
 import { FaFreeCodeCamp } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa6";
 import { SiTinkercad } from "react-icons/si";
+import UserContext from "../../context/user_context/UserContext";
 
 const ProfileCard = () => {
+  const { state } = useContext(UserContext);
   return (
-    <div className="w-fit px-6 py-6  text-center bg-gray-800 rounded-lg lg:mt-0 xl:px-10">
+    <div className="w-fit mx-auto  px-6 py-6  text-center bg-gray-800 rounded-lg lg:mt-4 xl:px-10">
       {/* main container */}
-      <div className="space-y-4 xl:space-y-6 flex gap-4">
+      <div className="space-y-4 xl:space-y-6 flex gap-4 ">
         {/* user img */}
         <div className="w-fit relative flex">
           <img
@@ -23,8 +26,8 @@ const ProfileCard = () => {
         {/* user details */}
         <div className="space-y-2">
           <div className="flex justify-center items-center flex-col space-y-3 text-lg font-medium leading-6">
-            <h3 className="text-white">Test User</h3>
-            <p className="text-indigo-300">Web Developer</p>
+            <h3 className="text-white capitalize">{state.userName}</h3>
+            <p className="text-indigo-300 font-light">{state.userEmail}</p>
             {/* web icons  */}
             <div className="flex justify-center items-center mt-5 space-x-5">
               {/* icon1  */}

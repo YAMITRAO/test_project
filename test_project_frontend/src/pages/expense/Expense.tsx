@@ -3,7 +3,7 @@ import ExpenseDetails from "./ExpenseDetails";
 import ExpenseForm from "./ExpenseForm";
 import axiosInt from "../../helper/ApiInstance";
 import { ApiResponse } from "../../types/ApiTypes";
-import { SingleExpense } from "../../types/Expense";
+import {  SingleExpense } from "../../types/Expense";
 import ExpenseEntries from "./ExpenseEntries";
 // import { categoryListArray } from "../../helper/CtaegotyList";
 
