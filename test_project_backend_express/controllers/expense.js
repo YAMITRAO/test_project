@@ -24,13 +24,36 @@ const addExpense = async (req, res) => {
 
 // get expense
 const getExpense = async (req, res) => {
+  console.log("Bodddyyyy is", req.body);
+  console.log("Query parameters", req.query);
+  const { page, limit, expense_type } = req.query;
   try {
-    const expenses = await Expense.findAll({
-      where: { userEmail: req.userEmail },
+    const whereCondition = { userEmail: req.userEmail };
+
+    // If expense_type is not 'all', add the filter for expenseType
+    if (expense_type !== "all") {
+      whereCondition.expenseType = expense_type; // Filter by the given expense_type (expense or income)
+    }
+    // total entries
+    const totalEntries = await Expense.count({
+      where: whereCondition,
     });
+
+    // required entries
+    const expenses = await Expense.findAll({
+      where: whereCondition,
+      limit: parseInt(limit),
+      offset: parseInt(limit * page),
+      order: [
+        ["expenseDate", "DESC"], // Sort by  (ASC or DESC) WE CAN ALSO SEND IT FROM FRONTEND
+      ],
+    });
+
+    let total_pages = Math.ceil(totalEntries / limit);
     res.status(200).json({
       message: "Success",
       data: expenses,
+      total_pages,
     });
   } catch (error) {
     res.status(400).json({

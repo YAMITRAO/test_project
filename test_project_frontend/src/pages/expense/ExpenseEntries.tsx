@@ -7,20 +7,34 @@ import {
 import EntryCard from "./EntryCard";
 import UserContext from "../../context/user_context/UserContext";
 import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate";
 
 const ExpenseEntries: React.FC<ExpenseEntriesProps_int> = ({
   expenseArray,
   incomeArray,
+  wholeArray,
   onTypeSelection,
   callBack,
+  totalExpensePages,
 }) => {
   const { state } = useContext(UserContext);
-  const [isExpense, setIsExpense] = useState(true);
-  const [categoryList, setCategoryList] = useState([
-    ...categoryListArrayFromTypes,
-  ]);
+  const [filterValue, setFilterValue] = useState("all");
   console.log("expense array is", expenseArray);
   console.log("income array is", incomeArray);
+
+  // for pagination click
+  const handlePageClick = (e: { selected: number }) => {
+    // data back to the expense bca it has getExpense function
+    callBack && callBack(e.selected, 10);
+  };
+
+  const filterHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    console.log("Selected value is", value);
+    setFilterValue(value);
+    onTypeSelection(value);
+    callBack && callBack(0, 10, value);
+  };
 
   return (
     <div className="w-full h-full  mt-4 ">
@@ -32,47 +46,24 @@ const ExpenseEntries: React.FC<ExpenseEntriesProps_int> = ({
           <div className="font-medium text-xl font-mono ">Entries</div>
           {/* filter selection */}
           <div className="w-fit flex gap-2 mb-1 ">
-            {/* expense selection */}
-            <div className="w-fit flex gap-1">
-              <input
-                type="radio"
-                name="expenseType"
-                value="expense"
-                className="peer"
-                checked={isExpense}
-                onChange={() => {
-                  setIsExpense(true);
-                  // setting category list according to expense and that is used at the edit entry time
-                  setCategoryList([...categoryListArrayFromTypes]);
-                  // to chnage graph from expense component
-                  onTypeSelection(true);
-                }}
-              />
-              <label>Expense</label>
-            </div>
-
-            {/* income selection */}
-            <div className="w-fit flex gap-1">
-              <input
-                type="radio"
-                name="expenseType"
-                value="income"
-                className="peer"
-                checked={!isExpense}
+            {/* selection based filtering */}
+            <div className="w-fit">
+              <select
+                className="rounded-md p-1 outline-none"
                 onChange={
                   state.isProUser
-                    ? () => {
-                        setIsExpense(false);
-                        // setting category list according to 'income' and that is used at the edit entry time
-                        setCategoryList([...categoryListArrayIncomeFromTypes]);
-                        onTypeSelection(false);
-                      }
-                    : () => {
-                        toast.error("Sorry!!! Your are not a premium user");
-                      }
+                    ? filterHandler
+                    : () => toast("Sorry!!! Your are not a premium user")
                 }
-              />
-              <label>Income</label>
+              >
+                <option value="all">All</option>
+                <option value={state.isProUser ? "expense" : "All"}>
+                  Expense
+                </option>
+                <option value={state.isProUser ? "income" : "All"}>
+                  Income
+                </option>
+              </select>
             </div>
           </div>
           {/* table */}
@@ -80,6 +71,7 @@ const ExpenseEntries: React.FC<ExpenseEntriesProps_int> = ({
             <thead>
               <tr>
                 <th className="border">Sr</th>
+                <th className="border">Type</th>
                 <th className="border">Date</th>
                 <th className="border">Amount</th>
                 <th className="border">Purpose</th>
@@ -88,10 +80,19 @@ const ExpenseEntries: React.FC<ExpenseEntriesProps_int> = ({
               </tr>
             </thead>
             <tbody>
-              {(isExpense ? expenseArray : incomeArray).map((val, index) => {
+              {(filterValue == "all"
+                ? wholeArray
+                : filterValue == "expense"
+                ? expenseArray
+                : incomeArray
+              ).map((val, index) => {
                 return (
                   <EntryCard
-                    categoryListArr={categoryList}
+                    categoryListArr={
+                      val.expenseType == "expense"
+                        ? [...categoryListArrayFromTypes]
+                        : [...categoryListArrayIncomeFromTypes]
+                    }
                     val={val}
                     index={index}
                     key={val.expenseDesc + index}
@@ -104,6 +105,22 @@ const ExpenseEntries: React.FC<ExpenseEntriesProps_int> = ({
           </table>
         </div>
       </div>
+      {/* react paginate */}
+      {totalExpensePages > 0 && (
+        <div>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={totalExpensePages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={1}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"} // This is important for styling
+            activeClassName={"active"} // To apply styles to the active page
+          />
+        </div>
+      )}
     </div>
   );
 };

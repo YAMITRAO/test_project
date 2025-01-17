@@ -42,8 +42,12 @@ export interface ExpenseFormProps_int {
 export interface ExpenseEntriesProps_int {
   incomeArray: SingleExpense[];
   expenseArray: SingleExpense[];
-  onTypeSelection: (data: boolean) => void;
-  callBack?: () => void;
+  wholeArray: SingleExpense[];
+  onTypeSelection: (data: string) => void;
+  callBack?: (pageNo?: number, limit?: number, expense_type?: string) => void;
+  // for pagination
+  // paginationPageHandler: (pageNo: number) => void;
+  totalExpensePages: number;
 }
 
 // EntryCard props interface

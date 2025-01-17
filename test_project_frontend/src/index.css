@@ -5,3 +5,40 @@
 body {
   @apply bg-slate-700;
 }
+
+/* for pagination */
+/* Styles for the pagination container */
+.pagination {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 8px 4px;
+  justify-content: center; /* Centers the pagination horizontally */
+}
+
+/* Styles for individual pagination items */
+.pagination li {
+  margin: 0 1px; /* Space between pagination items */
+}
+
+/* Styles for pagination links */
+.pagination li a {
+  padding: 6px 12px;
+  background-color: #d8cfcf;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Hover effect for pagination links */
+.pagination li a:hover {
+  background-color: #04376d;
+  color: white;
+}
+
+/* Active page styling */
+.pagination .active a {
+  background-color: #007bff;
+  color: white;
+}

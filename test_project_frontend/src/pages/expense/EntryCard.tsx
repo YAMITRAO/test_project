@@ -117,6 +117,14 @@ const EntryCard: React.FC<EntryCardProps_int> = ({
       className="odd:bg-slate-600 odd:text-slate-200 hover:bg-slate-300 hover:text-slate-900 even:bg-[#d4a373] even:text-slate-800 h-full"
     >
       <td className="border">{index + 1}</td>
+      <td className="border capitalize">
+        {" "}
+        {val.expenseType == "expense" ? (
+          <span className="text-yellow-300 font-medium">Exp</span>
+        ) : (
+          <span className="text-green-300 font-medium">Inc</span>
+        )}
+      </td>
       <td className="border">
         {!isEditClicked ? (
           moment(val.expenseDate).format("Do MMM YYYY")

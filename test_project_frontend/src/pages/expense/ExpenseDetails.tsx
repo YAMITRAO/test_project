@@ -25,7 +25,7 @@ const ExpenseDetails: React.FC<ExpenseDetailsProps_int> = ({
 
   return (
     <div className=" w-[400px] h-auto  flex flex-col gap-2 ">
-      {modifiedcategoryList?.length > 0 && (
+      {modifiedcategoryList?.length > 0 ? (
         <div className="w-full h-[300px]">
           {/* title graph visible only when values are avialable */}
           {modifiedcategoryList?.length > 0 && (
@@ -42,18 +42,15 @@ const ExpenseDetails: React.FC<ExpenseDetailsProps_int> = ({
             </div>
           )}
         </div>
-      )}
-
-      {/* details container */}
-      {false && (
-        <div className="w-full  h-full my-auto  mx-auto flex gap-2 justify-center text-lg font-medium border">
+      ) : (
+        <div className="w-[96%] my-2 h-full   mx-auto flex gap-2 justify-center text-lg font-medium flex-wrap">
           {/* total Imcome */}
-          <div className="w-full flex flex-col gap items-center bg-green-700 p-1 py-3 rounded ">
+          <div className="w-full flex flex-col gap items-center bg-green-700 p-1 py-3 rounded text-slate-200">
             <span>Total Income</span>
             <span>&#8377; {totalIncome}</span>
           </div>
           {/* total expense */}
-          <div className="w-full flex flex-col gap items-center bg-yellow-700 p-1 py-3 rounded ">
+          <div className="w-full flex flex-col gap items-center bg-yellow-700 p-1 py-3 rounded text-slate-200">
             <span>Total Expense</span>
             <span>&#8377; {totalExpense}</span>
           </div>

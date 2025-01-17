@@ -3,7 +3,7 @@ import ExpenseDetails from "./ExpenseDetails";
 import ExpenseForm from "./ExpenseForm";
 import axiosInt from "../../helper/ApiInstance";
 import { ApiResponse } from "../../types/ApiTypes";
-import {  SingleExpense } from "../../types/Expense";
+import { SingleExpense } from "../../types/Expense";
 import ExpenseEntries from "./ExpenseEntries";
 // import { categoryListArray } from "../../helper/CtaegotyList";
 
@@ -12,8 +12,11 @@ import ExpenseEntries from "./ExpenseEntries";
 const Expense = () => {
   const [expenseGetData, setExpenseGetData] = useState<SingleExpense[]>();
   const [incomeGetData, setIncomeGetData] = useState<SingleExpense[]>();
+  const [allGetData, setallGetData] = useState<SingleExpense[]>();
   const [totalIncome, setTotalIncome] = useState<number>(0);
   const [totalExpense, setTotalExpense] = useState<number>(0);
+  // for pagination
+  const [totalExpensePages, setTotalExpensePages] = useState<number>(5);
 
   const [categoryStackForGraphExpense, setCategoryForGraphExpense] =
     useState<Record<string, number>>();
@@ -23,26 +26,38 @@ const Expense = () => {
 
   // to select graph according to the entries component selection
   // by default expense graph
-  const [isExpenseGraph, setIsExpenseGraph] = useState(true);
+  const [ExpenseGraph, setExpenseGraph] = useState("all");
 
-  const onTypeSelection = (data: boolean) => {
+  const onTypeSelection = (data: string) => {
     console.log("function calllledddddd Selected type is ", data);
-    setIsExpenseGraph(data);
+    setExpenseGraph(data);
   };
 
-  const getExpenseData = async () => {
+  const getExpenseData = async (
+    pageNumber = 0,
+    pageLimit = 10,
+    expense_type = "all"
+  ) => {
+    console.log("Valueeeeeeeeeeeeeeee", expense_type);
     try {
       let response = await axiosInt.get<ApiResponse<SingleExpense[]>>(
-        "/expense",
+        `/expense?page=${pageNumber}&limit=${pageLimit}&expense_type=${expense_type}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage?.getItem("token")}`,
           },
         }
       );
-      // console.log("Expense get response is", response.data.data);
+      console.log("Expense get response is", response.data);
+      console.log("pagessssssssssssssssssssssssss", response.data.total_pages);
+      // set total pages
+      setTotalExpensePages(
+        response.data.total_pages ? response.data.total_pages : 0
+      );
       let expenseArray: SingleExpense[] = [];
       let incomeArray: SingleExpense[] = [];
+      // to show all entry at a time
+      let allEntryArray: SingleExpense[] = [];
       setTotalExpense(0);
       setTotalIncome(0);
 
@@ -63,6 +78,7 @@ const Expense = () => {
             );
           }
           expenseArray.push(val);
+          allEntryArray.push(val);
           setTotalExpense((prev) => prev + +val.expenseAmount);
         } else {
           //making an object for income graph to update useState
@@ -76,6 +92,7 @@ const Expense = () => {
             );
           }
           incomeArray.push(val);
+          allEntryArray.push(val);
           setTotalIncome((prev) => prev + +val.expenseAmount);
         }
       });
@@ -84,6 +101,8 @@ const Expense = () => {
       setExpenseGetData(expenseArray);
       // income array data
       setIncomeGetData(incomeArray);
+      // whole entries array
+      setallGetData(allEntryArray);
       // for graph ploting
       setCategoryForGraphExpense(tempCategoryStackExpense);
       setCategoryForGraphIncome(tempCategoryStackIncome);
@@ -103,12 +122,14 @@ const Expense = () => {
         <div className="w-fit  min-w-[400px]  h-auto ">
           <ExpenseDetails
             categoryStack={
-              isExpenseGraph
+              ExpenseGraph == "expense"
                 ? categoryStackForGraphExpense
                   ? categoryStackForGraphExpense
                   : {}
-                : categoryStackForGraphIncome
+                : ExpenseGraph == "income"
                 ? categoryStackForGraphIncome
+                  ? categoryStackForGraphIncome
+                  : {}
                 : {}
             }
             totalIncome={totalIncome}
@@ -128,8 +149,11 @@ const Expense = () => {
         <ExpenseEntries
           incomeArray={incomeGetData ? incomeGetData : []}
           expenseArray={expenseGetData ? expenseGetData : []}
+          wholeArray={allGetData ? allGetData : []}
           onTypeSelection={onTypeSelection}
-          callBack={() => getExpenseData()}
+          // pagination pages from api
+          totalExpensePages={totalExpensePages}
+          callBack={getExpenseData}
         />
       </div>
     </div>
